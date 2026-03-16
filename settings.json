@@ -6,7 +6,8 @@
         "Bash(curl:*)",
         "Bash(jq:*)",
         "Bash(head:*)",
-        "Bash(gh pr:*)"
+        "Bash(gh pr:*)",
+        "Bash(git:*)"
     ]
   },
   "statusLine": {
