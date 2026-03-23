@@ -7,7 +7,19 @@
         "Bash(jq:*)",
         "Bash(head:*)",
         "Bash(gh pr:*)",
-        "Bash(git:*)"
+        "Bash(git:*)",
+        "Bash(ls:*)",
+        "Bash(find:*)",
+        "Bash(echo:*)",
+        "Bash(sed:*)",
+        "Bash(diff:*)",
+        "Bash(cat:*)",
+        "Bash(tail:*)",
+        "Bash(wc:*)",
+        "Bash(cut:*)",
+        "Bash(tr:*)",
+        "Bash(uniq:*)",
+        "Bash(docker compose:*)"
     ]
   },
   "statusLine": {

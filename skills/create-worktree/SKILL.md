@@ -14,7 +14,7 @@ Before running the script, check if `.worktree.json` exists in the project root.
 **If it does NOT exist**, ask the user the following questions to create it:
 
 1. **Default branch** — Which branch do you merge into? (e.g., `master`, `main`)
-2. **Symlinks** — Are there files or directories that should be shared (symlinked) from the root into each worktree? Common examples: `.env`, `certs/`, config files. For each one, ask whether the path is the same in the worktree or different (e.g., root's `.env` linked as `backend/.env`).
+2. **Symlinks** — Are there files or directories that should be shared (symlinked) from the root into each worktree? Common examples: `.env`, config files. For each one, ask whether the path is the same in the worktree or different (e.g., root's `.env` linked as `backend/.env`).
 3. **Post-create commands** — Any setup commands to run after the worktree is created? (e.g., `npm install`, `bundle install`, `pip install -r requirements.txt`). If none are specified, the script will auto-detect common package managers.
 
 Once you have the answers, write the `.worktree.json` file to the project root and add `.worktree.json` to `.gitignore` (it contains local setup preferences, not project code). Then proceed with creating the worktree.
@@ -54,7 +54,6 @@ Projects can place a `.worktree.json` file in their root to customize worktree s
 {
   "default_branch": "master",
   "symlinks": [
-    "certs",
     ".env",
     { "source": ".env", "target": "backend/.env" }
   ],
