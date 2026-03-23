@@ -1,62 +1,41 @@
 ---
 name: merge-worktree
-description: Squash-merge all changes from the current worktree back into master and remove the worktree. Use when the user asks to "merge worktree", "merge back to master", "finish worktree", "merge changes back", or mentions merging worktree work into the main branch.
+description: Squash-merge all changes from the current worktree back into the default branch and remove the worktree. Use when the user asks to "merge worktree", "merge back to master", "finish worktree", "merge changes back", or mentions merging worktree work into the main branch.
 ---
 
-# Merge Worktree to Master
+# Merge Worktree
 
-Squash-merge all worktree commits into master with a descriptive commit message, then remove the worktree.
+Squash-merge all worktree commits into the default branch with a descriptive commit message, then remove the worktree.
 
-## Steps
+## Usage
 
-1. Confirm you are in a worktree (not the root):
-
-```bash
-ROOT="$(git worktree list --porcelain | head -1 | sed 's/^worktree //')"
-WORKTREE="$(git rev-parse --show-toplevel)"
-```
-
-If `$ROOT` equals `$WORKTREE`, stop — you are already on master. Tell the user.
-
-2. Capture the worktree HEAD and the commit log that diverges from master:
+Simply run the merge script:
 
 ```bash
-WORKTREE_HEAD="$(git rev-parse HEAD)"
-git log master..HEAD --oneline
+~/.claude/skills/merge-worktree/scripts/merge-worktree.sh
 ```
 
-If there are no commits ahead of master, ask for adding them.
+The script will:
+1. Verify you're in a worktree (not the root)
+2. Detect the default branch (from `.worktree.json` config, or auto-detect `main`/`master`)
+3. Show commits that will be merged
+4. Check for uncommitted changes (warns but continues)
+5. Generate a commit message automatically
+6. Squash merge to the default branch
+7. Remove the worktree (with --force if needed)
 
-3. Summarize the commit messages into a single merge-commit title. Use the commit subjects from step 2 to write a concise, imperative summary (e.g. "add confluence integration and fix comment rendering"). Keep it under ~72 characters. If there's only one commit, use its message directly.
+## What it does
 
-4. Check for uncommitted changes in the worktree. If any exist, ask the user whether to commit them first or discard them before proceeding.
-
-5. Switch to the root worktree and perform the squash merge:
-
-```bash
-git -C "$ROOT" merge --squash "$WORKTREE_HEAD"
-git -C "$ROOT" commit -m "<your summarized title>"
-```
-
-If the merge has conflicts, stop and inform the user. Do **not** force-resolve conflicts automatically.
-
-6. Verify the merge succeeded:
-
-```bash
-git -C "$ROOT" log -1 --oneline
-```
-
-7. Remove the worktree:
-
-```bash
-git worktree remove "$WORKTREE"
-```
-
-If removal fails (e.g. untracked files), try with `--force` after confirming with the user.
+- **Default branch detection**: Reads `default_branch` from `.worktree.json` in the project root. If not configured, checks if `main` exists, otherwise falls back to `master`.
+- **Single commit**: Uses that commit's message directly
+- **Multiple commits**: Uses the first commit's message as title, lists all commits in body
+- **Uncommitted changes**: Warns but continues (they won't be included in merge)
+- **Untracked files**: Forces worktree removal if needed
+- **Adds co-author**: Automatically adds Claude as co-author
 
 ## Notes
 
-- Always use `git -C "$ROOT"` to run commands against master from inside the worktree, so you don't need to `cd` out of the worktree before removing it.
-- The squash merge collapses all worktree commits into a single commit on master.
+- Always use `git -C "$ROOT"` to run commands against the default branch from inside the worktree, so you don't need to `cd` out of the worktree before removing it.
+- The squash merge collapses all worktree commits into a single commit on the default branch.
 - The worktree path is removed from disk after a successful merge.
 - If the user has multiple worktrees open, confirm which one to merge.
