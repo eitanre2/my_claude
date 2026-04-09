@@ -1,4 +1,4 @@
----
+/---
 name: merge-worktree
 description: Squash-merge all changes from the current worktree back into the default branch and remove the worktree. Use when the user asks to "merge worktree", "merge back to master", "finish worktree", "merge changes back", or mentions merging worktree work into the main branch.
 ---

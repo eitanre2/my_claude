@@ -93,6 +93,32 @@ Datadog uses its own search syntax:
 | Combination | `service:web AND status:error` |
 | Grouping | `(status:error OR status:critical) service:api` |
 
+## Search Hints
+
+### Searching by controller and action
+
+When asked about a specific controller action, use the `action` and `controller` fields in the query. The controller name should match the Ruby class name (e.g., `UsersController`, not `users_controller`).
+
+```bash
+# Requests to the "invite" action in UsersController
+python3 scripts/datadog_client.py --query "action:invite AND controller:UsersController"
+
+# Requests to the "create" action in AddonController
+python3 scripts/datadog_client.py --query "action:create AND controller:AddonController"
+```
+
+### Searching by HTTP status code
+
+Use both `status` and `response` fields combined with `OR`. The `response` field typically appears in nginx log records, while `status` appears in requests that reached Rails code.
+
+```bash
+# Requests with HTTP 502
+python3 scripts/datadog_client.py --query "status:502 OR response:502"
+
+# Requests with HTTP 429 in the last 6 hours
+python3 scripts/datadog_client.py --query "status:429 OR response:429" --hours 6
+```
+
 ## Examples
 
 - "Show me errors from the last hour in Datadog"
