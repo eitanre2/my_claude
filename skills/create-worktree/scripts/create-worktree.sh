@@ -37,10 +37,19 @@ fi
 WORKTREE_ID="$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 3 | head -n 1)"
 echo "Worktree ID: $WORKTREE_ID"
 
-# Ensure .claude/worktrees is in .gitignore
+# Ensure .claude/worktrees is in .gitignore (shared — applies to all users)
 if ! grep -q "^\.claude/worktrees" "$ROOT/.gitignore" 2>/dev/null; then
   echo ".claude/worktrees" >> "$ROOT/.gitignore"
   echo "Added .claude/worktrees to .gitignore"
+fi
+
+# Ensure .worktree.json is in .git/info/exclude (local-only — per-developer setup prefs)
+if [ -f "$ROOT/.worktree.json" ]; then
+  EXCLUDE_FILE="$(git rev-parse --git-common-dir)/info/exclude"
+  if [ -f "$EXCLUDE_FILE" ] && ! grep -q "^\.worktree\.json$" "$EXCLUDE_FILE" 2>/dev/null; then
+    echo ".worktree.json" >> "$EXCLUDE_FILE"
+    echo "Added .worktree.json to .git/info/exclude (local-only)"
+  fi
 fi
 
 # Create worktree

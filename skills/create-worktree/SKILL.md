@@ -17,7 +17,7 @@ Before running the script, check if `.worktree.json` exists in the project root.
 2. **Symlinks** — Are there files or directories that should be shared (symlinked) from the root into each worktree? Common examples: `.env`, config files. For each one, ask whether the path is the same in the worktree or different (e.g., root's `.env` linked as `backend/.env`).
 3. **Post-create commands** — Any setup commands to run after the worktree is created? (e.g., `npm install`, `bundle install`, `pip install -r requirements.txt`). If none are specified, the script will auto-detect common package managers.
 
-Once you have the answers, write the `.worktree.json` file to the project root and add `.worktree.json` to `.gitignore` (it contains local setup preferences, not project code). Then proceed with creating the worktree.
+Once you have the answers, write the `.worktree.json` file to the project root. Then proceed with creating the worktree — the script will add `.worktree.json` to `.git/info/exclude` (per-repo, local-only — the file contains each developer's setup preferences and shouldn't be shared via the committed `.gitignore`).
 
 **If it already exists**, skip straight to running the script.
 
@@ -39,7 +39,7 @@ The script will:
 1. Check if you're in the root worktree (warns if not)
 2. Get the current branch or commit
 3. Generate a random 3-character worktree ID
-4. Ensure `.claude/worktrees` is in .gitignore
+4. Ensure `.claude/worktrees` is in .gitignore (shared) and `.worktree.json` is in `.git/info/exclude` (local-only)
 5. Create the worktree under `.claude/worktrees/<id>`
 6. Create a new branch (if branch name provided)
 7. Create symbolic links defined in `.worktree.json` (if config exists)
